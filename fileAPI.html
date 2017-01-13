@@ -1,0 +1,81 @@
+<!DOCTYPE>
+<meta charset="utf-8">
+<title>file api的使用</title>
+<style>
+  .upload {
+    width: 100px;
+    height: 100px;
+    background: #ccc;
+    position: relative;
+  }
+  .upload::before {
+    content: '';
+    width: 2px;
+    height: 30px;
+    position: absolute;
+    top: 35px;
+    left: 49px;
+    background-color: #FFF;
+  }
+  .upload::after {
+    content: '';
+    width: 30px;
+    height: 2px;
+    position: absolute;
+    top: 49px;
+    left: 35px;
+    background-color: #fff;
+  }
+  .object {
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+  }
+</style>
+<form action="">
+  <input type="file" multiple id="upFile" accept="image/*" style="display:none;"/>
+</form>
+
+<article>
+  <section>
+    <header>按钮</header>
+    <div class="upload"></div>
+  </section>
+  <section>
+    <header>图片展示</header>
+    <div class="show"></div>
+  </section>
+</article>
+
+<script>
+  var showBox = document.querySelector('.show');
+  var upBtn = document.querySelector('.upload');
+  var fileBtn = document.querySelector('#upFile');
+  upBtn.onclick = function () {
+    if (fileBtn) {
+      fileBtn.click();
+    }
+  }
+  function handleFiles (files,objshow) {
+    var imageType = /^image\//;
+    for (var i = 0; i<files.length; i++) {
+      if ( !imageType.test(files[i].type)) {
+        continue;
+      }
+      var img = document.createElement('img');
+      img.classList.add('object');
+      img.file = files[i];
+      objshow.appendChild(img);
+      var reader = new FileReader();
+      reader.onload = (function(aimg){
+        return function (e){
+          aimg.src = e.target.result;
+        }
+      })(img);
+      reader.readAsDataURL(files[i]);
+    }
+  }
+  fileBtn.onchange = function (e) {
+    handleFiles(this.files,showBox)
+  }
+</script>
